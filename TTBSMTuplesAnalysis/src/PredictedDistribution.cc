@@ -190,7 +190,7 @@ void PredictedDistribution::DivideDists(TH1D *h1d_1, TH1D *h1d_2, bool useBinomi
 	if ( (rate.Np < 0) || (rate.Nt < 0) || (rate.Nt < rate.Np) ) {
 	  std::cout << "\n INVALID INPUT FOR ERROR CALCULATION. I QUIT! " 
 	       << rate.Np << " " << rate.Nt << std::endl;
-	  std::sqrt(-1.);
+	  //std::sqrt(-1.); ->jdolen removed for sl6 7XX compilation errors
 	}
 	  
 	val = rate.eff();

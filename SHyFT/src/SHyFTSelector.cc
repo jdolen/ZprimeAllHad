@@ -198,9 +198,9 @@ bool SHyFTSelector::operator() ( edm::EventBase const & event, pat::strbitset & 
       
       if ( trig->wasRun() && trig->wasAccept() ) { 
          
-         const pat::TriggerPathCollection *paths = trig->paths();
+         //const pat::TriggerPathCollection *paths = trig->paths();
          
-         pat::TriggerPath const * lepPath;
+         pat::TriggerPath const * lepPath=0;
          if(muPlusJets_)
             lepPath = trig->path(muTrig_);
          else if (ePlusJets_)

@@ -38,7 +38,7 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "TPRegexp.h"
-#include "AnalysisDataFormats/TopObjects/interface/CATopJetTagInfo.h"
+#include "DataFormats/JetReco/interface/CATopJetTagInfo.h"
 
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
@@ -215,7 +215,7 @@ BoostedTopTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
    /// Type 1+1
 
    bool pass11 = false;
-   bool pass12 = false;
+   //bool pass12 = false;
    if ( jetHandle1->size() >= 2 ) {
      /// ...
 
@@ -230,9 +230,9 @@ BoostedTopTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
      reco::CATopJetTagInfo const * caTopTagInfo1 = dynamic_cast<reco::CATopJetTagInfo const *>( tagInfo1 );
 
      bool mass0 = caTopTagInfo0->properties().topMass > 140.0 && caTopTagInfo0->properties().topMass < 250.0;
-     bool substructure0 = jet0.numberOfDaughters() >= 3 && caTopTagInfo0->properties().minMass > 50.0;
+     //bool substructure0 = jet0.numberOfDaughters() >= 3 && caTopTagInfo0->properties().minMass > 50.0;
      bool mass1 = caTopTagInfo1->properties().topMass > 140.0 && caTopTagInfo1->properties().topMass < 250.0;
-     bool substructure1 = jet1.numberOfDaughters() >= 3 && caTopTagInfo1->properties().minMass > 50.0;
+     //bool substructure1 = jet1.numberOfDaughters() >= 3 && caTopTagInfo1->properties().minMass > 50.0;
 
 
      if ( jet0.pt() > 350 &&
@@ -255,7 +255,7 @@ BoostedTopTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
        HThistAll->Fill(HTsum);
        bool passedTrig = false;
        if ( foundHLTTrigObjs.size() != 0 ){
-	 double trigPt = foundHLTTrigObjs[0].pt();
+	 //double trigPt = foundHLTTrigObjs[0].pt();
        if ( Nbtag >= threshold_ ) {
 	   passedTrig = true;
 	 }
@@ -281,7 +281,7 @@ BoostedTopTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
        reco::CATopJetTagInfo const * caTopTagInfo0 = dynamic_cast<reco::CATopJetTagInfo const *>( tagInfo0 );
 
        bool mass0 = caTopTagInfo0->properties().topMass > 140.0 && caTopTagInfo0->properties().topMass < 250.0;
-       bool substructure0 = jet0.numberOfDaughters() >= 3 && caTopTagInfo0->properties().minMass > 50.0;
+       //bool substructure0 = jet0.numberOfDaughters() >= 3 && caTopTagInfo0->properties().minMass > 50.0;
 
        bool mass1 = jet1.mass() > 50.0;
        
@@ -297,7 +297,7 @@ BoostedTopTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 	HThistType12->Fill(HTsum );
        
         HThistAll->Fill(HTsum);
-	 pass12 = true;
+	 //pass12 = true;
 	 ++nTotal12_;
        
 	float invMass = (jet0.p4() + jet1.p4() + jet2.p4()).mass();
@@ -308,7 +308,7 @@ BoostedTopTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
 	 bool passedTrig = false;
 	 if ( foundHLTTrigObjs.size() != 0 ){
-	   double trigPt = foundHLTTrigObjs[0].pt();
+	   //double trigPt = foundHLTTrigObjs[0].pt();
 	   if ( Nbtag >= threshold_ ) {
 	     passedTrig = true;
 	   }

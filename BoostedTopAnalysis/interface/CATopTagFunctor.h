@@ -17,7 +17,7 @@
 
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
-#include "AnalysisDataFormats/TopObjects/interface/CATopJetTagInfo.h"
+#include "DataFormats/JetReco/interface/CATopJetTagInfo.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 #include "PhysicsTools/SelectorUtils/interface/Selector.h"

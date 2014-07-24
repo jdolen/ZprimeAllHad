@@ -34,7 +34,7 @@
 #include "DataFormats/PatCandidates/interface/TriggerPath.h"
 #include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
 #include "Analysis/BoostedTopAnalysis/interface/SubjetHelper.h"
-#include "AnalysisDataFormats/TopObjects/interface/CATopJetTagInfo.h"
+#include "DataFormats/JetReco/interface/CATopJetTagInfo.h"
 #include "Analysis/BoostedTopAnalysis/interface/CATopTagFunctor.h"
 #include "Analysis/BoostedTopAnalysis/interface/BoostedTopWTagFunctor.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
@@ -89,7 +89,6 @@ class TTBSMProducer : public edm::EDFilter {
   edm::InputTag             trigSrc_;
   edm::InputTag   rhoSrc_;          /// mean pt per unit area
   edm::InputTag   pvSrc_;           /// primary vertex
-  edm::InputTag   genJetsSrc_;
   std::vector<std::string>  trigs_;
   std::string               topTagName_;
   CATopTagFunctor           topTagFunctor_;
@@ -102,6 +101,7 @@ class TTBSMProducer : public edm::EDFilter {
 
   std::vector<std::string>  jecPayloads_; /// files for JEC payloads
   std::string               pdfSet_; /// lhapdf string
+  edm::InputTag   genJetsSrc_;
 
   boost::shared_ptr<JetCorrectionUncertainty> jecUnc_;
   boost::shared_ptr<FactorizedJetCorrector> jec_;
@@ -714,13 +714,13 @@ reco::GenJet theMatchingGenJet;
     topTagBDisc->push_back( ijet->bDiscriminator("combinedSecondaryVertexBJetTags") );
     topTagPartonFlavour->push_back( ijet->partonFlavour() );
    
-	const pat::Jet* topTagSubjets[4] = { NULL, NULL, NULL, NULL };
+	//const pat::Jet* topTagSubjets[4] = { NULL, NULL, NULL, NULL };
 
 
-	topTagSubjets[0] = dynamic_cast<const pat::Jet*>((ijet->daughter(0)));
-	if (nSubjets > 1) topTagSubjets[1] = dynamic_cast<const pat::Jet*>((ijet->daughter(1)));
-	if (nSubjets > 2) topTagSubjets[2] = dynamic_cast<const pat::Jet*>((ijet->daughter(2)));
-	if (nSubjets > 3) topTagSubjets[3] = dynamic_cast<const pat::Jet*>((ijet->daughter(3)));
+	//topTagSubjets[0] = dynamic_cast<const pat::Jet*>((ijet->daughter(0)));
+	//if (nSubjets > 1) topTagSubjets[1] = dynamic_cast<const pat::Jet*>((ijet->daughter(1)));
+	//if (nSubjets > 2) topTagSubjets[2] = dynamic_cast<const pat::Jet*>((ijet->daughter(2)));
+	//if (nSubjets > 3) topTagSubjets[3] = dynamic_cast<const pat::Jet*>((ijet->daughter(3)));
  
 for (int i = 0; i < nSubjets; i++ ) {
     
@@ -984,8 +984,10 @@ for (int i = 0; i < nSubjets; i++ ) {
 float TTBSMProducer::smear_factor_lookup(float eta, float error)
 {
 	float abseta = abs(eta);
-	float smear_nominal, smear_up, smear_down;
-	float smear_factor;
+	float smear_nominal =1.0;
+	float smear_up =1.0;
+	float smear_down =1.0;
+	float smear_factor = 1.0 ;
 
 	if (abseta <= 0.5) {
 		smear_nominal = 0.052;
@@ -1016,7 +1018,7 @@ float TTBSMProducer::smear_factor_lookup(float eta, float error)
 	if (error < 0.05) smear_factor = smear_down;
 	else if (error < 0.15) smear_factor = smear_nominal;
 	else if (error < 0.25) smear_factor = smear_up;	
-
+	else cout<<"SMEAR FACTOR FORCED TO BE 1.0"<<endl;
 
 
 

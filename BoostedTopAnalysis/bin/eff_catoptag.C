@@ -3,7 +3,7 @@
 // CMS includes
 #include "DataFormats/FWLite/interface/Handle.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
-#include "AnalysisDataFormats/TopObjects/interface/CATopJetTagInfo.h"
+#include "DataFormats/JetReco/interface/CATopJetTagInfo.h"
 #include "DataFormats/Math/interface/deltaR.h"
 
 #include "PhysicsTools/FWLite/interface/EventContainer.h"
