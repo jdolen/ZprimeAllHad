@@ -34,7 +34,7 @@
 #include "DataFormats/PatCandidates/interface/TriggerPath.h"
 #include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
 #include "Analysis/BoostedTopAnalysis/interface/SubjetHelper.h"
-#include "DataFormats/JetReco/interface/CATopJetTagInfo.h"
+// #include "DataFormats/JetReco/interface/CATopJetTagInfo.h"
 #include "Analysis/BoostedTopAnalysis/interface/CATopTagFunctor.h"
 #include "Analysis/BoostedTopAnalysis/interface/BoostedTopWTagFunctor.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
@@ -398,8 +398,8 @@ TTBSMProducer::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   iEvent.getByLabel( wTagSrc_, h_wTag );
   iEvent.getByLabel( topTagSrc_, h_topTag );
-  iEvent.getByLabel( "patMETsPFlow", h_met );
-  iEvent.getByLabel( "goodPatJetsCA8PF", h_ca8Jets);
+  iEvent.getByLabel( "patMETs", h_met); //patMETsPFlow", h_met );
+  iEvent.getByLabel( "patJetsCA8PF", h_ca8Jets);
 
   pat::strbitset wTagRet = wTagFunctor_.getBitTemplate();
   pat::strbitset topTagRet = topTagFunctor_.getBitTemplate();
@@ -409,6 +409,7 @@ TTBSMProducer::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     pfMET->push_back(imet->polarP4());
 
   }
+
 
   for ( std::vector<pat::Jet>::const_iterator jetBegin = h_wTag->begin(), jetEnd = h_wTag->end(), ijet = jetBegin; ijet != jetEnd; ++ijet ) {
 
@@ -539,47 +540,48 @@ TTBSMProducer::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     wTagPartonFlavour->push_back( ijet->partonFlavour() );
   }
   
-  for ( std::vector<pat::Jet>::const_iterator jetBegin = h_ca8Jets->begin(), jetEnd = h_ca8Jets->end(), ijet = jetBegin; ijet != jetEnd; ++ijet ) {
+  // cout<<"CA8 jets"<<endl;
+  // for ( std::vector<pat::Jet>::const_iterator jetBegin = h_ca8Jets->begin(), jetEnd = h_ca8Jets->end(), ijet = jetBegin; ijet != jetEnd; ++ijet ) {
 	  
 	  
-	  std::vector<fastjet::PseudoJet> FJparticles;
+	 //  std::vector<fastjet::PseudoJet> FJparticles;
 	  
 	  
 
-      for (unsigned i = 0; i < ijet->numberOfDaughters() ; i++){
+  //     for (unsigned i = 0; i < ijet->numberOfDaughters() ; i++){
 
-	        const reco::PFCandidate* this_constituent = dynamic_cast<const reco::PFCandidate*>(ijet->daughter(i));
+	 //        const reco::PFCandidate* this_constituent = dynamic_cast<const reco::PFCandidate*>(ijet->daughter(i));
 
-	        FJparticles.push_back( fastjet::PseudoJet( this_constituent->px(),
-						   	   this_constituent->py(),
-							   this_constituent->pz(),
-							   this_constituent->energy() ) );
+	 //        FJparticles.push_back( fastjet::PseudoJet( this_constituent->px(),
+		// 				   	   this_constituent->py(),
+		// 					   this_constituent->pz(),
+		// 					   this_constituent->energy() ) );
 
 
-      }
+  //     }
 
-	  fastjet::PseudoJet combJet = fastjet::join(FJparticles);
-	  tau1->push_back(Nsub1.result(combJet));
-	  tau2->push_back(Nsub2.result(combJet));
-	  tau3->push_back(Nsub3.result(combJet));
-	  tau4->push_back(Nsub4.result(combJet));
-    onepasstau1->push_back(Nsubonepass1.result(combJet));
-    onepasstau2->push_back(Nsubonepass2.result(combJet));
-    onepasstau3->push_back(Nsubonepass3.result(combJet));
-    onepasstau4->push_back(Nsubonepass4.result(combJet));
+	 //  fastjet::PseudoJet combJet = fastjet::join(FJparticles);
+	 //  tau1->push_back(Nsub1.result(combJet));
+	 //  tau2->push_back(Nsub2.result(combJet));
+	 //  tau3->push_back(Nsub3.result(combJet));
+	 //  tau4->push_back(Nsub4.result(combJet));
+  //   onepasstau1->push_back(Nsubonepass1.result(combJet));
+  //   onepasstau2->push_back(Nsubonepass2.result(combJet));
+  //   onepasstau3->push_back(Nsubonepass3.result(combJet));
+  //   onepasstau4->push_back(Nsubonepass4.result(combJet));
 
 
 	  
-    	  reco::Candidate::LorentzVector uncorrCA8jet = ijet->correctedP4(1);
-          reco::Candidate::PolarLorentzVector corrCA8jet (uncorrCA8jet.pt(), uncorrCA8jet.eta(), uncorrCA8jet.phi(), uncorrCA8jet.mass());
+  //   	  reco::Candidate::LorentzVector uncorrCA8jet = ijet->correctedP4(1);
+  //         reco::Candidate::PolarLorentzVector corrCA8jet (uncorrCA8jet.pt(), uncorrCA8jet.eta(), uncorrCA8jet.phi(), uncorrCA8jet.mass());
       
 	  
-	  ca8JetP4->push_back(corrCA8jet);	  
+	 //  ca8JetP4->push_back(corrCA8jet);	  
 	           
-    //fastjet::PseudoJet trimmed_jet_CA2_PFRAC5 = trimmer_CA2_PFRAC5(combJet);
+  //   //fastjet::PseudoJet trimmed_jet_CA2_PFRAC5 = trimmer_CA2_PFRAC5(combJet);
 
 	  
-  }
+  // }
 	  
 	  
   
@@ -702,14 +704,18 @@ reco::GenJet theMatchingGenJet;
     corrJet.SetEta( corrJet.eta() * etaScale_ );
     corrJet.SetPhi( corrJet.phi() * phiScale_ );
 
-    const reco::CATopJetTagInfo * catopTag = 
-      dynamic_cast<reco::CATopJetTagInfo const *>(ijet->tagInfo(topTagName_));
-    bool passedTopTag = topTagFunctor_( *ijet, topTagRet );
+    //FIX MINMASS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //FIX MINMASS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //FIX MINMASS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //FIX MINMASS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // const reco::CATopJetTagInfo * catopTag = 
+    //  dynamic_cast<reco::CATopJetTagInfo const *>(ijet->tagInfo(topTagName_));
+    //bool passedTopTag = topTagFunctor_( *ijet, topTagRet );
 
     topTagP4->push_back( corrJet );
-    topTagPass->push_back( passedTopTag );
-    topTagMinMass->push_back( catopTag->properties().minMass * (corr * ptSmear_) );
-    topTagTopMass->push_back( catopTag->properties().topMass * (corr * ptSmear_) );
+    //topTagPass->push_back( passedTopTag );
+    // topTagMinMass->push_back( catopTag->properties().minMass * (corr * ptSmear_) );
+    // topTagTopMass->push_back( catopTag->properties().topMass * (corr * ptSmear_) );
     topTagNSubjets->push_back( ijet->numberOfDaughters() );
     topTagBDisc->push_back( ijet->bDiscriminator("combinedSecondaryVertexBJetTags") );
     topTagPartonFlavour->push_back( ijet->partonFlavour() );
@@ -721,7 +727,6 @@ reco::GenJet theMatchingGenJet;
 	//if (nSubjets > 1) topTagSubjets[1] = dynamic_cast<const pat::Jet*>((ijet->daughter(1)));
 	//if (nSubjets > 2) topTagSubjets[2] = dynamic_cast<const pat::Jet*>((ijet->daughter(2)));
 	//if (nSubjets > 3) topTagSubjets[3] = dynamic_cast<const pat::Jet*>((ijet->daughter(3)));
- 
 for (int i = 0; i < nSubjets; i++ ) {
     
 	const pat::Jet* this_subjet = dynamic_cast<const pat::Jet*>((ijet->daughter(i)));
@@ -797,23 +802,24 @@ for (int i = 0; i < nSubjets; i++ ) {
 
   //Make hemisphere
   if( topTagP4->size() > 0 ) {
-    LorentzV  leadJet = topTagP4->at(0);
+    LorentzV  leadJet = topTagP4->at(0); 
     for( size_t i=0; i<topTagP4->size(); i++ ) {
       double dPhi = fabs( reco::deltaPhi<double>( leadJet.phi(), topTagP4->at(i).phi() ) );
+     
       if( dPhi < TMath::Pi()/2 )  {
-        topTagP4Hemis0->push_back( topTagP4->at(i) );
-        topTagMinMassHemis0->push_back( topTagMinMass->at(i) );
-        topTagTopMassHemis0->push_back( topTagTopMass->at(i) );
+        topTagP4Hemis0->push_back( topTagP4->at(i) ); 
+        //topTagMinMassHemis0->push_back( topTagMinMass->at(i) );
+        //topTagTopMassHemis0->push_back( topTagTopMass->at(i) );
         topTagNSubjetsHemis0->push_back( topTagNSubjets->at(i) );
-        topTagPassHemis0->push_back( topTagPass->at(i) );
+        //topTagPassHemis0->push_back( topTagPass->at(i) );
         topTagPartonFlavour0->push_back( topTagPartonFlavour->at(i) );
       }
       else  {
         topTagP4Hemis1->push_back( topTagP4->at(i) );
-        topTagMinMassHemis1->push_back( topTagMinMass->at(i) );
-        topTagTopMassHemis1->push_back( topTagTopMass->at(i) );
+        //topTagMinMassHemis1->push_back( topTagMinMass->at(i) );
+        //topTagTopMassHemis1->push_back( topTagTopMass->at(i) );
         topTagNSubjetsHemis1->push_back( topTagNSubjets->at(i) );
-        topTagPassHemis1->push_back( topTagPass->at(i) );
+        //topTagPassHemis1->push_back( topTagPass->at(i) );
         topTagPartonFlavour1->push_back( topTagPartonFlavour->at(i) );
       }
     }
@@ -833,7 +839,6 @@ for (int i = 0; i < nSubjets; i++ ) {
       }
     }
   }
-
   if( wTagP4Hemis0->size() > 0 )  {
     LorentzV   leadJetHemis0 = wTagP4Hemis0->at(0) ;
     double minDr = 99999. ;
